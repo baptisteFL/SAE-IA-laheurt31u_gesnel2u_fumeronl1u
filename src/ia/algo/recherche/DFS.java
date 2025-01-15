@@ -1,6 +1,7 @@
 package ia.algo.recherche;
 
 import java.util.Stack;
+import java.util.HashSet;
 import java.util.ArrayList;
 
 import ia.framework.common.Misc;
@@ -14,8 +15,8 @@ import ia.framework.recherche.SearchNode;
 
 public class DFS extends TreeSearch {
 
-    public DFS(SearchProblem prob, State intial_state) {
-        super(prob, intial_state);
+    public DFS(SearchProblem prob, State initial_state) {
+        super(prob, initial_state);
     }
 
     @Override
@@ -30,6 +31,10 @@ public class DFS extends TreeSearch {
         // On crée une pile pour les noeuds à explorer
         Stack<SearchNode> frontier = new Stack<>();
         frontier.push(node);
+
+        // On crée un ensemble pour les noeuds visités
+        HashSet<State> visited = new HashSet<>();
+        visited.add(state);
 
         while (!frontier.isEmpty()) {
             // On récupère le dernier noeud de la pile
@@ -58,7 +63,11 @@ public class DFS extends TreeSearch {
             // Ajouter les noeuds enfants à la pile
             for (Action a : actions) {
                 SearchNode child = SearchNode.makeChildSearchNode(problem, node, a);
-                frontier.push(child);
+                State childState = child.getState();
+                if (!visited.contains(childState)) {
+                    frontier.push(child);
+                    visited.add(childState);
+                }
             }
         }
 

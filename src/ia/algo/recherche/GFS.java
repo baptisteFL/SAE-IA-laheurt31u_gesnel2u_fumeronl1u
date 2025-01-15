@@ -10,12 +10,12 @@ import ia.framework.recherche.TreeSearch;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.PriorityQueue;
 
-public class GFS extends TreeSearch
-{
-    public GFS(final SearchProblem prob, final State intial_state) {
-        super(prob, intial_state);
+public class GFS extends TreeSearch {
+    public GFS(final SearchProblem prob, final State initial_state) {
+        super(prob, initial_state);
     }
 
     @Override
@@ -25,13 +25,18 @@ public class GFS extends TreeSearch
         if (ArgParse.DEBUG) {
             System.out.print("[\n" + state);
         }
-        final PriorityQueue<SearchNode> frontier = new PriorityQueue<SearchNode>(new Comparator<SearchNode>() {
+        final PriorityQueue<SearchNode> frontier = new PriorityQueue<>(new Comparator<SearchNode>() {
             @Override
             public int compare(final SearchNode o1, final SearchNode o2) {
-                return (int) (o1.getCost() + o1.getHeuristic() - o2.getCost() - o2.getHeuristic());
+                return (int) (o1.getHeuristic() - o2.getHeuristic());
             }
         });
         frontier.add(node);
+
+        // Create a set to keep track of visited states
+        HashSet<State> visited = new HashSet<>();
+        visited.add(state);
+
         while (!frontier.isEmpty()) {
             node = frontier.poll();
             state = node.getState();
@@ -52,10 +57,14 @@ public class GFS extends TreeSearch
             }
             for (final Action a : actions) {
                 final SearchNode child = SearchNode.makeChildSearchNode(this.problem, node, a);
-                if (ArgParse.DEBUG) {
-                    System.out.println("Ajout de " + child.getState() + " à la frontière");
+                State childState = child.getState();
+                if (!visited.contains(childState)) {
+                    frontier.add(child);
+                    visited.add(childState);
+                    if (ArgParse.DEBUG) {
+                        System.out.println("Ajout de " + childState + " à la frontière");
+                    }
                 }
-                frontier.add(child);
             }
         }
         return false;

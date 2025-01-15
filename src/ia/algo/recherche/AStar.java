@@ -10,32 +10,22 @@ import ia.framework.recherche.TreeSearch;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.PriorityQueue;
 
-public class AStar extends TreeSearch
-{
-    /**
-     * Crée un algorithme de recherche
-     *
-     * @param p Le problème à résoudre
-     * @param s L'état initial
-     */
-    public AStar(SearchProblem p, State s)
-    {
+public class AStar extends TreeSearch {
+    public AStar(SearchProblem p, State s) {
         super(p, s);
     }
 
     @Override
-    public boolean solve()
-    {
-        // On commence à l'état initial
+    public boolean solve() {
         SearchNode node = SearchNode.makeRootSearchNode(this.initial_state);
         State state = node.getState();
 
         if (ArgParse.DEBUG)
             System.out.print("[\n" + state);
 
-        // On crée une file pour les noeuds à explorer
         PriorityQueue<SearchNode> frontier = new PriorityQueue<>(new Comparator<SearchNode>() {
             @Override
             public int compare(SearchNode o1, SearchNode o2) {
@@ -44,15 +34,17 @@ public class AStar extends TreeSearch
         });
         frontier.add(node);
 
+        // Create a set to keep track of visited states
+        HashSet<State> visited = new HashSet<>();
+        visited.add(state);
+
         while (!frontier.isEmpty()) {
-            // On récupère le premier noeud de la file
             node = frontier.poll();
             state = node.getState();
 
             if (ArgParse.DEBUG)
                 System.out.print(" + " + state + "] -> [");
 
-            // Vérifier si l'état actuel est l'état but
             if (problem.isGoalState(state)) {
                 end_node = node;
                 if (ArgParse.DEBUG)
@@ -60,7 +52,6 @@ public class AStar extends TreeSearch
                 return true;
             }
 
-            // Les actions possibles depuis cet état
             ArrayList<Action> actions = problem.getActions(state);
 
             if (ArgParse.DEBUG) {
@@ -68,13 +59,16 @@ public class AStar extends TreeSearch
                 System.out.println(Misc.collection2string(actions, ','));
             }
 
-            // Ajouter les noeuds enfants à la file
             for (Action a : actions) {
                 SearchNode child = SearchNode.makeChildSearchNode(problem, node, a);
-                if (ArgParse.DEBUG) {
-                    System.out.println("Ajout de " + child.getState() + " à la frontière");
+                State childState = child.getState();
+                if (!visited.contains(childState)) {
+                    frontier.add(child);
+                    visited.add(childState);
+                    if (ArgParse.DEBUG) {
+                        System.out.println("Ajout de " + childState + " à la frontière");
+                    }
                 }
-                frontier.add(child);
             }
         }
 

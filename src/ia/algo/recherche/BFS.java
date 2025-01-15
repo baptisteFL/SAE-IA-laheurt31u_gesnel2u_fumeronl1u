@@ -1,6 +1,7 @@
 package ia.algo.recherche;
 
 import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.ArrayList;
 
 import ia.framework.common.Misc;
@@ -14,8 +15,8 @@ import ia.framework.recherche.SearchNode;
 
 public class BFS extends TreeSearch {
 
-    public BFS(SearchProblem prob, State intial_state) {
-        super(prob, intial_state);
+    public BFS(SearchProblem prob, State initial_state) {
+        super(prob, initial_state);
     }
 
     @Override
@@ -30,6 +31,10 @@ public class BFS extends TreeSearch {
         // On crée une file pour les noeuds à explorer
         LinkedList<SearchNode> frontier = new LinkedList<>();
         frontier.add(node);
+
+        // On crée un ensemble pour les noeuds visités
+        HashSet<State> visited = new HashSet<>();
+        visited.add(state);
 
         while (!frontier.isEmpty()) {
             // On récupère le premier noeud de la file
@@ -58,7 +63,11 @@ public class BFS extends TreeSearch {
             // Ajouter les noeuds enfants à la file
             for (Action a : actions) {
                 SearchNode child = SearchNode.makeChildSearchNode(problem, node, a);
-                frontier.add(child);
+                State childState = child.getState();
+                if (!visited.contains(childState)) {
+                    frontier.add(child);
+                    visited.add(childState);
+                }
             }
         }
 
