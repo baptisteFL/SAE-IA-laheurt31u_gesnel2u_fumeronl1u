@@ -7,23 +7,23 @@ import ia.framework.jeux.Game;
 import ia.framework.jeux.GameState;
 import java.util.List;
 
-public class MinMaxPlayer extends Player {
+public class AlphaBetaPlayer extends Player {
 
-    public MinMaxPlayer(Game game, boolean playerOne) {
+    public AlphaBetaPlayer(Game game, boolean playerOne) {
         super(game, playerOne);
-        this.name = "MinMax";
+        this.name = "AlphaBeta";
     }
 
     @Override
     public Action getMove(GameState state) {
         if (this.player == PLAYER1) {
-            return maxValue(state).getAction();
+            return maxValue(state, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY).getAction();
         } else {
-            return minValue(state).getAction();
+            return minValue(state, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY).getAction();
         }
     }
 
-    private ActionValuePair maxValue(GameState state) {
+    private ActionValuePair maxValue(GameState state, double alpha, double beta) {
         this.incStateCounter();
         if (game.endOfGame(state)) {
             return new ActionValuePair(null, state.getGameValue());
@@ -35,18 +35,26 @@ public class MinMaxPlayer extends Player {
 
         for (Action action : actions) {
             GameState nextState = (GameState) game.doAction(state, action);
-            ActionValuePair result = minValue(nextState);
+            ActionValuePair result = minValue(nextState, alpha, beta);
 
             if (result.getValue() > vMax) {
                 vMax = result.getValue();
                 bestAction = action;
+            }
+
+            if (vMax > alpha) {
+                alpha = vMax;
+            }
+
+            if (vMax >= beta) {
+                return new ActionValuePair(bestAction, vMax);
             }
         }
 
         return new ActionValuePair(bestAction, vMax);
     }
 
-    private ActionValuePair minValue(GameState state) {
+    private ActionValuePair minValue(GameState state, double alpha, double beta) {
         this.incStateCounter();
         if (game.endOfGame(state)) {
             return new ActionValuePair(null, state.getGameValue());
@@ -58,11 +66,19 @@ public class MinMaxPlayer extends Player {
 
         for (Action action : actions) {
             GameState nextState = (GameState) game.doAction(state, action);
-            ActionValuePair result = maxValue(nextState);
+            ActionValuePair result = maxValue(nextState, alpha, beta);
 
             if (result.getValue() < vMin) {
                 vMin = result.getValue();
                 bestAction = action;
+            }
+
+            if (vMin < beta) {
+                beta = vMin;
+            }
+
+            if (vMin <= alpha) {
+                return new ActionValuePair(bestAction, vMin);
             }
         }
 
