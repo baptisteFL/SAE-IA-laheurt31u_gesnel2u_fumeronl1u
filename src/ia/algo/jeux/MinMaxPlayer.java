@@ -16,7 +16,6 @@ public class MinMaxPlayer extends Player {
 
     @Override
     public Action getMove(GameState state) {
-        this.resetStateCounter();
         if (this.player == PLAYER1) {
             return maxValue(state).getAction();
         } else {

@@ -28,6 +28,7 @@ public class HumanPlayer extends Player {
      * <p>Demande un coup au joueur humain</p>
      */
     public Action getMove(GameState state){
+        this.incStateCounter();
         return game.getHumanMove(state);
     }
 
