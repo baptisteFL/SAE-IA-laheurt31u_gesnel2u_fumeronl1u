@@ -16,6 +16,36 @@ interface TransferFunction  {
     public double evaluateDer(double value);
 }
 
+class SigmoidFunction implements TransferFunction {
+    @Override
+    public double evaluate(double value) {
+        return 1 / (1 + Math.exp(-value));
+    }
+
+    /**
+     * @param value résultat de la fonction d'évaluation
+     */
+    @Override
+    public double evaluateDer(double value) {
+        return value * (1 - value);
+    }
+}
+
+class TanhFunction implements TransferFunction {
+    @Override
+    public double evaluate(double value) {
+        return Math.tanh(value);
+    }
+
+    /**
+     * @param value résultat de la fonction d'évaluation
+     */
+    @Override
+    public double evaluateDer(double value) {
+        return 1 - Math.pow(value, 2);
+    }
+}
+
 class Neuron {
     public double    Value;
     public double[]  Weights;
