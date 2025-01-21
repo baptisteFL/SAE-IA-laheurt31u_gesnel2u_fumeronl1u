@@ -152,5 +152,14 @@ public abstract class TreeSearch {
         return this.visited.keySet();
     }
 
+    /**
+     * Retourne le nombre d'états visités
+     *
+     * @return le nombre d'états visités
+     */
+    public int getStateVisitedCount() {
+        return this.visited.size();
+    }
+
     
 }
