@@ -7,7 +7,7 @@ public class Main
     public static void main(String[] args) throws IOException
     {
         int[] etiquettes = LabelCrawler.getEtiquettes("train-labels.idx1-ubyte");
-        DataInputStream reader = new DataInputStream(new FileInputStream("data/train-images.idx3-ubyte"));
+        DataInputStream reader = new DataInputStream(new FileInputStream("MNIST/train-images.idx3-ubyte"));
         int magic = reader.readInt();
         int nbImages = reader.readInt();
         int rows = reader.readInt();
@@ -39,7 +39,7 @@ public class Main
         AlgoClassification algo = new PlusProche(images);
         Statistiques stats = new Statistiques(algo);
 
-        reader = new DataInputStream(new FileInputStream("data/t10k-images.idx3-ubyte"));
+        reader = new DataInputStream(new FileInputStream("MNIST/t10k-images.idx3-ubyte"));
         int magicD = reader.readInt();
         int nbImagesD = reader.readInt();
         int rowsD = reader.readInt();
