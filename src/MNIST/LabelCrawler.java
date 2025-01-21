@@ -6,7 +6,7 @@ public class LabelCrawler
 {
     public static int[] getEtiquettes(String fichier) throws IOException
     {
-        DataInputStream reader = new DataInputStream(new FileInputStream("data/"+fichier));
+        DataInputStream reader = new DataInputStream(new FileInputStream("MNIST/"+fichier));
         int magic = reader.readInt();
         int nbLabel = reader.readInt();
         int[] etiquettes = new int[nbLabel];

@@ -1,14 +1,16 @@
 package MNIST;
-import java.util.ArrayList;
 
-public abstract class AlgoClassification
-{
-    ArrayList<Imagette> imgs;
+public abstract class AlgoClassification {
 
-    public AlgoClassification(ArrayList<Imagette> i)
-    {
-        imgs = i;
+    Imagette[] trainImages;
+    int[] trainLabels;
+
+    public AlgoClassification(Imagette[] trainImages, int[] trainLabels) {
+        this.trainImages = trainImages;
+        this.trainLabels = trainLabels;
     }
 
-    public abstract int predireEtiquette(Imagette img);
+    public abstract int predire(Imagette image);
+
+
 }
