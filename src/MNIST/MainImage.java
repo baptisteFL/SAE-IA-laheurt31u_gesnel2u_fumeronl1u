@@ -3,7 +3,7 @@ package MNIST;
 public class MainImage {
 
     public static void main(String[] args) {
-        Donnees imagette = new Donnees("images/train-images.idx3-ubyte");
+        Donnees imagette = new Donnees("MNIST/train-images.idx3-ubyte");
 
         int[] premiereImagette = imagette.getImagette(0).getData();
         imagette.sauverImage(premiereImagette, "premiereImagette.png");

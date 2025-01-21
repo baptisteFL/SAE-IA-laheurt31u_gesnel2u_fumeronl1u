@@ -59,7 +59,7 @@ public class Donnees {
         }
 
         try {
-            ImageIO.write(img, "png", new File("images/" + path));
+            ImageIO.write(img, "png", new File("MNIST/" + path));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
