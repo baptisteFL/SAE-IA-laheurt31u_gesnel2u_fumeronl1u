@@ -129,6 +129,64 @@ public class ArgParse {
         return getArgFromCmd(args, "-p2");
     }
 
+    /**
+     * Retourne le nombre de couches du MLP
+     *
+     * @param args Le tableau de la ligne de commande
+     * @return le nombre de couches ou null
+     */
+    public static int getLayersFromCmd(String[] args)
+    {
+        handleFlags(args);
+        return getValueOfParam(args, "-c", 3);
+    }
+
+    /**
+     * Retourne le pas d'apprentissage du MLP
+     *
+     * @param args Le tableau de la ligne de commande
+     * @return le pas d'apprentissage ou null
+     */
+    public static double getLearningRateFromCmd(String[] args)
+    {
+        handleFlags(args);
+        return getRealValueOfParam(args, "-p", 0.1);
+    }
+
+    /**
+     * Retourne le nombre d'itérations du MLP
+     *
+     * @param args Le tableau de la ligne de commande
+     * @return le nombre d'itérations ou null
+     */
+    public static int getIterationsFromCmd(String[] args)
+    {
+        handleFlags(args);
+        return getValueOfParam(args, "-i", 10000);
+    }
+
+    /**
+     * Retourne la fonction d'activation du MLP
+     *
+     * @param args Le tableau de la ligne de commande
+     * @return la fonction d'activation ou null
+     */
+    public static TransferFunction getActivationFunctionFromCmd(String[] args)
+    {
+        handleFlags(args);
+        String s = getArgFromCmd(args, "-f");
+        if (s != null)
+            switch (s) {
+                case "sigmoid":
+                    return new SigmoidFunction();
+                case "tanh":
+                    return new TanhFunction();
+                default:
+                    usage();
+                    System.exit(2);
+            }
+        return new SigmoidFunction(); // valeur par défaut
+    }
 
     /**
      * Retourne la valeur d'un argument de la ligne de commande
@@ -149,6 +207,28 @@ public class ArgParse {
                 System.exit(2);
             }
         return def; // valeur par défaut 
+
+    }
+
+    /**
+     * Retourne la valeur d'un argument de la ligne de commande
+     *
+     * @param args Le tableau de la ligne de commande
+     * @param par  le nom de l'argument
+     * @param def  la valeur par default
+     * @return la valeur spécifié ou par celle défaut
+     */
+    public static double getRealValueOfParam(String[] args, String par, double def) {
+        handleFlags(args);
+        String s = getArgFromCmd(args, par);
+        if (s != null)
+            try {
+                return Double.parseDouble(s);
+            } catch (NumberFormatException e) {
+                usage();
+                System.exit(2);
+            }
+        return def; // valeur par défaut
 
     }
 
