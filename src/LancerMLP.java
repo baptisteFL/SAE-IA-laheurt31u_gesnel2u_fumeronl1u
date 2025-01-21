@@ -44,17 +44,24 @@ public class LancerMLP {
 
         // Étape 2 : Préparer les données
         double[][] inputEntrainement = {
-                {0.1, 0.2, 0.3},
-                {0.4, 0.5, 0.6}
-        };
-        double[][] outputEntrainement = {
+                {0, 0},
                 {0, 1},
-                {1, 0}
+                {1, 0},
+                {1, 1}
+        };
+
+        double[][] outputEntrainement = {
+                {0},
+                {1},
+                {1},
+                {1}
         };
 
         double[][] inputTest = {
-                {0.1, 0.2, 0.3},
-                {0.7, 0.8, 0.9}
+                {0, 0},
+                {0, 1},
+                {1, 0},
+                {1, 1}
         };
 
         // Étape 3 : Apprentissage
@@ -71,9 +78,12 @@ public class LancerMLP {
         {
             double[] prediction = reseau.execute(inputTest[i]);
             System.out.println("Prédiction " + Arrays.toString(inputTest[i]) + " : " + Arrays.toString(prediction));
-            if (min(Math.abs(prediction[0] - outputEntrainement[i][0]), Math.abs(prediction[1] - outputEntrainement[i][1])) < seuil)
+            for (int j = 0; j < outputEntrainement[i].length; j++)
             {
-                score++;
+                if (Math.abs(prediction[j] - outputEntrainement[i][j]) < seuil)
+                {
+                    score++;
+                }
             }
         }
 
