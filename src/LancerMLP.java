@@ -51,10 +51,10 @@ public class LancerMLP {
         };
 
         double[][] outputEntrainement = {
-                {0},
-                {1},
-                {1},
-                {0}
+                {0, 0},
+                {1, 1},
+                {1, 0},
+                {0, 0}
         };
 
         double[][] inputTest = {
@@ -78,6 +78,7 @@ public class LancerMLP {
         for (int i = 0; i < inputTest.length; i++)
         {
             double[] prediction = reseau.execute(inputTest[i]);
+            int tempScore = score;
             System.out.println("Prédiction " + Arrays.toString(inputTest[i]) + " : " + Arrays.toString(prediction));
             for (int j = 0; j < outputEntrainement[i].length; j++)
             {
@@ -86,15 +87,19 @@ public class LancerMLP {
                     score++;
                 }
             }
+
+            if (score != inputTest[0].length) {
+                score = tempScore;
+            }
         }
         long totalTime = System.currentTimeMillis() - startTime;
 
         System.out.println("Score : " + score + "/" + inputTest.length);
 
         // Étape 5 : Sauvegarde
-//        FileWriter writer = new FileWriter("docs/resultXOR.csv", true);
-//        String fonctionString = fonction.getClass().toString().contains("Sigmoid") ? "sigmoid" : "tanh";
-//        writer.write(couches.length + ";" + Arrays.toString(couches) + ";" + maxIterations + ";" + pasApprentissage + ";" + fonctionString + ";" + score + ";" + totalTime+"\n");
-//        writer.close();
+        FileWriter writer = new FileWriter("docs/resultXOR2Sorties.csv", true);
+        String fonctionString = fonction.getClass().toString().contains("Sigmoid") ? "sigmoid" : "tanh";
+        writer.write(couches.length + ";" + Arrays.toString(couches) + ";" + maxIterations + ";" + pasApprentissage + ";" + fonctionString + ";" + score + ";" + totalTime+"\n");
+        writer.close();
     }
 }
