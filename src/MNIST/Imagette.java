@@ -1,46 +1,24 @@
 package MNIST;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-public class Imagette
-{
-    private int[][] pixels;
-    private int label;
+public class Imagette {
 
-    public Imagette(int[][] pixels, int l)
-    {
-        this.pixels = pixels;
-        this.label = l;
+    int[] data;
+    int etiquette;
+
+    public Imagette(int etiquette, int[] data) {
+        this.etiquette = etiquette;
+        this.data = data;
     }
 
-    @Override
-    public String toString()
-    {
-        return String.valueOf(this.label);
+    public int getEtiquette() {
+        return etiquette;
     }
 
-    public int[][] getPixels()
-    {
-        return pixels;
+    public int[] getData() {
+        return data;
     }
 
-    public int getLabel()
-    {
-        return label;
-    }
-
-    public void createImage(String name) throws IOException
-    {
-        BufferedImage image = new BufferedImage(pixels[0].length, pixels.length, BufferedImage.TYPE_INT_RGB);
-        for (int i = 0; i < pixels.length; i++)
-        {
-            for (int j = 0; j < pixels[i].length; j++)
-            {
-                image.setRGB(i, j, pixels[i][j] << 16 | pixels[i][j] << 8 | pixels[i][j]);
-                ImageIO.write(image, "png", new File("img/"+name+".png"));
-            }
-        }
+    public void setEtiquette(int etiquette) {
+        this.etiquette = etiquette;
     }
 }

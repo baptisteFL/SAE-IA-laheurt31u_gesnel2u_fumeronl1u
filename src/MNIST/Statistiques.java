@@ -1,24 +1,22 @@
 package MNIST;
-import java.util.ArrayList;
 
-public class Statistiques
-{
+public class Statistiques {
+
     AlgoClassification algo;
+    Imagette[] testImages;
 
-    public Statistiques(AlgoClassification a)
-    {
-        this.algo = a;
+    public Statistiques(AlgoClassification algo, Imagette[] testImages) {
+        this.algo = algo;
+        this.testImages = testImages;
     }
 
-    double statistiquer(ArrayList<Imagette> imgs)
-    {
-        int nbImg = imgs.size();
-        int nbsuccess = 0;
-        for (Imagette img : imgs)
-        {
-            if (algo.predireEtiquette(img) == img.getLabel()) nbsuccess++;
+    public double getTauxErreur() {
+        int erreur = 0;
+        for(Imagette image : testImages) {
+            if(algo.predire(image) != image.getEtiquette()) {
+                erreur++;
+            }
         }
-        return (double) nbsuccess /nbImg;
-
+        return (double)erreur / testImages.length;
     }
 }
