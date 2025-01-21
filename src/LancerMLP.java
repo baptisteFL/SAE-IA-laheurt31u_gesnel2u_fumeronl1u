@@ -1,16 +1,16 @@
 import ia.framework.common.ArgParse;
 import ia.framework.recherche.MLP;
-import ia.framework.recherche.SigmoidFunction;
 import ia.framework.recherche.TransferFunction;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import static java.lang.Math.min;
-
 public class LancerMLP {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException
+    {
         // fixer le message d'aide
         ArgParse.setUsage
                 ("Utilisation :\n\n"
@@ -54,7 +54,7 @@ public class LancerMLP {
                 {0},
                 {1},
                 {1},
-                {1}
+                {0}
         };
 
         double[][] inputTest = {
@@ -74,6 +74,7 @@ public class LancerMLP {
         // Étape 4 : Test
         int score = 0;
         double seuil = 0.1;
+        long startTime = System.currentTimeMillis();
         for (int i = 0; i < inputTest.length; i++)
         {
             double[] prediction = reseau.execute(inputTest[i]);
@@ -86,7 +87,14 @@ public class LancerMLP {
                 }
             }
         }
+        long totalTime = System.currentTimeMillis() - startTime;
 
         System.out.println("Score : " + score + "/" + inputTest.length);
+
+        // Étape 5 : Sauvegarde
+//        FileWriter writer = new FileWriter("docs/resultXOR.csv", true);
+//        String fonctionString = fonction.getClass().toString().contains("Sigmoid") ? "sigmoid" : "tanh";
+//        writer.write(couches.length + ";" + Arrays.toString(couches) + ";" + maxIterations + ";" + pasApprentissage + ";" + fonctionString + ";" + score + ";" + totalTime+"\n");
+//        writer.close();
     }
 }
