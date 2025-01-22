@@ -52,13 +52,12 @@ public class LancerAnalyseImage
         Imagette[] imagettes = ImageEntrainement.getImagettes();
         // Étape 2 : Préparer les données
         double[][] inputEntrainement = new double[imagettes.length][28*28];
-        double[][] outputEntrainement = new double[imagettes.length][1];
+        double[][] outputEntrainement = new double[imagettes.length][10];
         double[] tabSortie;
         int[] data;
         double[] finData = new double[28*28];
         for (int i = 0; i < imagettes.length; i++)
         {
-            System.out.println(imagettes[i].getEtiquette());
             data = imagettes[i].getData();
             for (int j = 0; j < 28*28; j++)
             {
@@ -66,42 +65,41 @@ public class LancerAnalyseImage
             }
             int et = imagettes[i].getEtiquette();
             tabSortie = new double[10];
-            for (int j = 0; j<10;j++)
-            {
-                tabSortie[j] = 0.;
-                if (j == et) tabSortie[j] = 1.;
-            }
-            System.out.println(Arrays.toString(tabSortie));
+            tabSortie[et] = 1.;
             //System.out.println(et);
             //System.out.println(Arrays.toString(tabSortie));
-            outputEntrainement[i] = tabSortie;
+            outputEntrainement[i] = tabSortie.clone();
             inputEntrainement[i] = finData.clone();
+            System.out.println(Arrays.toString(inputEntrainement[0]));
+            System.out.println(Arrays.toString(inputEntrainement[1]));
+            System.out.println(Arrays.toString(outputEntrainement[0]));
+            System.out.println(Arrays.toString(outputEntrainement[1]));
         }
         double[][] inputTest = inputEntrainement.clone();
         // Étape 3 : Apprentissage
-        System.out.println("j'apprends");
-        double[] errMoy = new double[inputEntrainement.length];
-        int i = 0;
-        long startTimeApprentissage = System.currentTimeMillis();
-        while (i < maxIterations)
-        {
-            System.out.println("apprend" + i);
+        System.out.println("Apprentissage");
+//        double[] errMoy = new double[inputEntrainement.length];
+//        int i = 0;
+long startTimeApprentissage = System.currentTimeMillis();
+//        while (i < maxIterations)
+//        {
+//            System.out.println("apprend" + i);
             double err = 0;
             for (int j = 0; j < inputEntrainement.length; j++)
             {
-                double[] prediction = reseau.execute(inputEntrainement[j]);
+//                double[] prediction = reseau.execute(inputEntrainement[j]);
                 err += reseau.backPropagate(inputEntrainement[j], outputEntrainement[j]);
             }
-            errMoy[i%inputEntrainement.length] = err / inputEntrainement.length;
-            System.out.println(errMoy[i%inputEntrainement.length]);
-            if (errMoy[i%inputEntrainement.length] < 0.01)
-            {
-                break;
-            }
-            i++;
-        }
+//            errMoy[i%inputEntrainement.length] = err / inputEntrainement.length;
+//            System.out.println(errMoy[i%inputEntrainement.length]);
+//            if (errMoy[i%inputEntrainement.length] < 0.01)
+//            {
+//                break;
+//            }
+//            i++;
+//        }
         long totalTimeApprentissage = System.currentTimeMillis() - startTimeApprentissage;
-        double erreurMoyenneFinale = Arrays.stream(errMoy).reduce(0, Double::sum) / errMoy.length;
+        //double erreurMoyenneFinale = Arrays.stream(errMoy).reduce(0, Double::sum) / errMoy.length;
 
         System.out.println("j'essaie");
 
@@ -111,19 +109,33 @@ public class LancerAnalyseImage
         long startTimeTest = System.currentTimeMillis();
         for (int j = 0; j < inputTest.length; j++)
         {
+            double max = -1;
+            int indiceMax = 0;
             double[] prediction = reseau.execute(inputTest[j]);
-            System.out.println("Prédiction " + j + " : " + Arrays.toString(prediction));
-            System.out.println("Résultat attendu : " + Arrays.toString(outputEntrainement[j]));
-            for (int k = 0; k < outputEntrainement[j].length; k++)
+            for (int k = 0; k<prediction.length;k++)
             {
-                if (Math.abs(prediction[k] - outputEntrainement[j][k]) < seuil)
+                if (max<prediction[k])
                 {
-                    score++;
+                    max = prediction[k];
+                    indiceMax = k;
                 }
             }
+            double realMax = -1;
+            int indiceRealMax = 0;
+            for (int k = 0; k < outputEntrainement[j].length; k++)
+            {
+                if (realMax<outputEntrainement[j][k])
+                {
+                    realMax = outputEntrainement[j][k];
+                    indiceRealMax = k;
+                }
+            }
+            System.out.println("Prédiction :" + indiceMax);
+            System.out.println("Résultat attendu : " + indiceRealMax);
+            if (indiceMax == indiceRealMax) score++;
         }
         long totalTimeTest = System.currentTimeMillis() - startTimeTest;
-        score = score / outputEntrainement.length;
+        System.out.println("temps d'exécution : " + totalTimeTest+" ms");
         System.out.println("Score : " + score + "/" + inputTest.length);
     }
 }
