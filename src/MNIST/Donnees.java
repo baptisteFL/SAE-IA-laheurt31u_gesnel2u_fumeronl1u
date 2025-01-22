@@ -33,7 +33,7 @@ public class Donnees {
 
             imagettes = new int[nbImages][nbLignes * nbColonnes];
 
-            for(int i = 0; i < nbImages; i++) {
+            for(int i = 0; i < 100; i++) {
                 for(int j = 0; j < nbLignes * nbColonnes; j++) {
                     imagettes[i][j] = dis.readUnsignedByte();
                 }

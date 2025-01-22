@@ -3,13 +3,13 @@ package MNIST;
 public class MainStatistiques {
 
     public static void main(String[] args) {
-        Donnees ImageEntrainement = new Donnees("images/train-images.idx3-ubyte");
-        Etiquette LabelEntrainement = new Etiquette("images/train-labels.idx1-ubyte");
+        Donnees ImageEntrainement = new Donnees("MNIST/train-images.idx3-ubyte");
+        Etiquette LabelEntrainement = new Etiquette("MNIST/train-labels.idx1-ubyte");
         Imagette[] imagettes = ImageEntrainement.getImagettes();
         ImageEntrainement.chargerEtiquette(LabelEntrainement);
 
-        Donnees ImageTest = new Donnees("images/t10k-images.idx3-ubyte");
-        Etiquette LabelTest = new Etiquette("images/t10k-labels.idx1-ubyte");
+        Donnees ImageTest = new Donnees("MNIST/t10k-images.idx3-ubyte");
+        Etiquette LabelTest = new Etiquette("MNIST/t10k-labels.idx1-ubyte");
 
         Imagette[] imagettesTest = ImageTest.getImagettes();
         ImageTest.chargerEtiquette(LabelTest);
@@ -17,7 +17,6 @@ public class MainStatistiques {
         PlusProche pp = new PlusProche(ImageEntrainement.getImagettes(), LabelEntrainement.getEtiquettes());
         for(int i = 0; i < 50; i++) {
             int p = pp.predire(imagettesTest[i]);
-            ImageTest.sauverImage(imagettesTest[i].getData(), "premiereImagetteTest.png");
             System.out.println("Première image test : " + p + " (attendu : " + imagettesTest[i].getEtiquette() + ")");
         }
 
@@ -28,7 +27,6 @@ public class MainStatistiques {
         kNN knn = new kNN(ImageEntrainement.getImagettes(), LabelEntrainement.getEtiquettes());
         for(int i = 0; i < 50; i++) {
             int p = knn.predire(imagettesTest[i]);
-            ImageTest.sauverImage(imagettesTest[i].getData(), "premiereImagetteTest.png");
             System.out.println("Première image test : " + p + " (attendu : " + imagettesTest[i].getEtiquette() + ")");
         }
 

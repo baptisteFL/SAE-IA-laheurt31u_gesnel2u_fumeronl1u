@@ -5,7 +5,7 @@ public class Imagette {
     int[] data;
     int etiquette;
 
-    public Imagette(int etiquette, int[] data) {
+    public Imagette(int etiquette, int [] data) {
         this.etiquette = etiquette;
         this.data = data;
     }
