@@ -65,41 +65,52 @@ public class LancerMLP {
         };
 
         // Étape 3 : Apprentissage
-        for (int i = 0; i < maxIterations; i++)
+        double[] errMoy = new double[inputEntrainement.length];
+        int i = 0;
+        long startTimeApprentissage = System.currentTimeMillis();
+        while (i < maxIterations)
         {
-            double errMoy = reseau.backPropagate(inputEntrainement[i % inputEntrainement.length], outputEntrainement[i % outputEntrainement.length]);
-            System.out.println("Erreur à l'itération " + i + " : " + errMoy);
+            double err = 0;
+            for (int j = 0; j < inputEntrainement.length; j++)
+            {
+                double[] prediction = reseau.execute(inputEntrainement[j]);
+                err += reseau.backPropagate(inputEntrainement[j], outputEntrainement[j]);
+            }
+            errMoy[i%inputEntrainement.length] = err / inputEntrainement.length;
+            if (errMoy[i%inputEntrainement.length] < 0.01)
+            {
+                break;
+            }
+            i++;
         }
+        long totalTimeApprentissage = System.currentTimeMillis() - startTimeApprentissage;
+        double erreurMoyenneFinale = Arrays.stream(errMoy).reduce(0, Double::sum) / errMoy.length;
 
         // Étape 4 : Test
         int score = 0;
         double seuil = 0.1;
-        long startTime = System.currentTimeMillis();
-        for (int i = 0; i < inputTest.length; i++)
+        long startTimeTest = System.currentTimeMillis();
+        for (int j = 0; j < inputTest.length; j++)
         {
-            double[] prediction = reseau.execute(inputTest[i]);
-            int tempScore = score;
-            System.out.println("Prédiction " + Arrays.toString(inputTest[i]) + " : " + Arrays.toString(prediction));
-            for (int j = 0; j < outputEntrainement[i].length; j++)
+            double[] prediction = reseau.execute(inputTest[j]);
+            System.out.println("Prédiction " + Arrays.toString(inputTest[j]) + " : " + Arrays.toString(prediction));
+            for (int k = 0; k < outputEntrainement[j].length; k++)
             {
-                if (Math.abs(prediction[j] - outputEntrainement[i][j]) < seuil)
+                if (Math.abs(prediction[k] - outputEntrainement[j][k]) < seuil)
                 {
                     score++;
                 }
             }
-
-            if (score != inputTest[0].length) {
-                score = tempScore;
-            }
         }
-        long totalTime = System.currentTimeMillis() - startTime;
+        long totalTimeTest = System.currentTimeMillis() - startTimeTest;
 
+        score = score / outputEntrainement.length;
         System.out.println("Score : " + score + "/" + inputTest.length);
 
         // Étape 5 : Sauvegarde
         FileWriter writer = new FileWriter("docs/resultXOR2Sorties.csv", true);
         String fonctionString = fonction.getClass().toString().contains("Sigmoid") ? "sigmoid" : "tanh";
-        writer.write(couches.length + ";" + Arrays.toString(couches) + ";" + maxIterations + ";" + pasApprentissage + ";" + fonctionString + ";" + score + ";" + totalTime+"\n");
+        writer.write(couches.length + ";" + Arrays.toString(couches) + ";" + i + ";" + pasApprentissage + ";" + fonctionString + ";" + erreurMoyenneFinale + ";" + totalTimeApprentissage + ";" + score + "\n");
         writer.close();
     }
 }
