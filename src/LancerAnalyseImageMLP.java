@@ -5,11 +5,12 @@ import ia.framework.common.ArgParse;
 import ia.framework.recherche.MLP;
 import ia.framework.recherche.TransferFunction;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class LancerAnalyseImage
+public class LancerAnalyseImageMLP
 {
 
     public static void main(String[] args) throws IOException
@@ -19,12 +20,10 @@ public class LancerAnalyseImage
                 ("Utilisation :\n\n"
                         + "java LancerMLP [-c entier] "
                         + "[-p double] "
-                        + "[-i entier] "
                         + "[-f string]"
                         + "[-h]\n\n"
                         + "-c : Nombre de couches. Par défaut 3\n"
                         + "-p : Pas d'apprentissage. Par défaut 0.1\n"
-                        + "-i : Nombre maximum d'itérations. Par défaut 10000\n"
                         + "-f : Fonction d'activation {sigmoid, tanh}. Par défaut sigmoid\n"
                 );
 
@@ -39,29 +38,27 @@ public class LancerAnalyseImage
 
         double pasApprentissage = ArgParse.getLearningRateFromCmd(args);
 
-        int maxIterations = ArgParse.getIterationsFromCmd(args);
-
         TransferFunction fonction = ArgParse.getActivationFunctionFromCmd(args);
 
         MLP reseau = new MLP(couches, pasApprentissage, fonction);
 
 
-        Donnees ImageEntrainement = new Donnees("MNIST/train-images.idx3-ubyte");
-        Etiquette LabelEntrainement = new Etiquette("MNIST/train-labels.idx1-ubyte");
+        Donnees ImageEntrainement = new Donnees("MNIST/t10k-images.idx3-ubyte");
+        Etiquette LabelEntrainement = new Etiquette("MNIST/t10k-labels.idx1-ubyte");
         ImageEntrainement.chargerEtiquette(LabelEntrainement);
         Imagette[] imagettes = ImageEntrainement.getImagettes();
         // Étape 2 : Préparer les données
-        double[][] inputEntrainement = new double[imagettes.length][28*28];
+        double[][] inputEntrainement = new double[imagettes.length][28 * 28];
         double[][] outputEntrainement = new double[imagettes.length][10];
         double[] tabSortie;
         int[] data;
-        double[] finData = new double[28*28];
+        double[] finData = new double[28 * 28];
         for (int i = 0; i < imagettes.length; i++)
         {
             data = imagettes[i].getData();
-            for (int j = 0; j < 28*28; j++)
+            for (int j = 0; j < 28 * 28; j++)
             {
-                finData[j]= (double) data[j] /255;
+                finData[j] = (double) data[j] / 255;
             }
             int et = imagettes[i].getEtiquette();
             tabSortie = new double[10];
@@ -78,30 +75,16 @@ public class LancerAnalyseImage
         double[][] inputTest = inputEntrainement.clone();
         // Étape 3 : Apprentissage
         System.out.println("Apprentissage");
-//        double[] errMoy = new double[inputEntrainement.length];
-//        int i = 0;
-long startTimeApprentissage = System.currentTimeMillis();
-//        while (i < maxIterations)
-//        {
-//            System.out.println("apprend" + i);
-            double err = 0;
-            for (int j = 0; j < inputEntrainement.length; j++)
-            {
-//                double[] prediction = reseau.execute(inputEntrainement[j]);
-                err += reseau.backPropagate(inputEntrainement[j], outputEntrainement[j]);
-            }
-//            errMoy[i%inputEntrainement.length] = err / inputEntrainement.length;
-//            System.out.println(errMoy[i%inputEntrainement.length]);
-//            if (errMoy[i%inputEntrainement.length] < 0.01)
-//            {
-//                break;
-//            }
-//            i++;
-//        }
+        double[] errMoy = new double[inputEntrainement.length];
+        long startTimeApprentissage = System.currentTimeMillis();
+        double err = 0;
+        for (int j = 0; j < inputEntrainement.length; j++)
+        {
+            err += reseau.backPropagate(inputEntrainement[j], outputEntrainement[j]);
+            errMoy[j] = err;
+        }
         long totalTimeApprentissage = System.currentTimeMillis() - startTimeApprentissage;
-        //double erreurMoyenneFinale = Arrays.stream(errMoy).reduce(0, Double::sum) / errMoy.length;
-
-        System.out.println("j'essaie");
+        double erreurMoyenneFinale = Arrays.stream(errMoy).reduce(0, Double::sum) / inputEntrainement.length;
 
         // Étape 4 : Test
         int score = 0;
@@ -112,9 +95,9 @@ long startTimeApprentissage = System.currentTimeMillis();
             double max = -1;
             int indiceMax = 0;
             double[] prediction = reseau.execute(inputTest[j]);
-            for (int k = 0; k<prediction.length;k++)
+            for (int k = 0; k < prediction.length; k++)
             {
-                if (max<prediction[k])
+                if (max < prediction[k])
                 {
                     max = prediction[k];
                     indiceMax = k;
@@ -124,7 +107,7 @@ long startTimeApprentissage = System.currentTimeMillis();
             int indiceRealMax = 0;
             for (int k = 0; k < outputEntrainement[j].length; k++)
             {
-                if (realMax<outputEntrainement[j][k])
+                if (realMax < outputEntrainement[j][k])
                 {
                     realMax = outputEntrainement[j][k];
                     indiceRealMax = k;
@@ -135,7 +118,13 @@ long startTimeApprentissage = System.currentTimeMillis();
             if (indiceMax == indiceRealMax) score++;
         }
         long totalTimeTest = System.currentTimeMillis() - startTimeTest;
-        System.out.println("temps d'exécution : " + totalTimeTest+" ms");
+        System.out.println("temps d'exécution : " + totalTimeTest + " ms");
         System.out.println("Score : " + score + "/" + inputTest.length);
+
+        // Étape 5 : Sauvegarde
+        FileWriter writer = new FileWriter("docs/resultImageTestMLP.csv", true);
+        String fonctionString = fonction.getClass().toString().contains("Sigmoid") ? "sigmoid" : "tanh";
+        writer.write(couches.length + ";" + Arrays.toString(couches) + ";" + pasApprentissage + ";" + fonctionString + ";" + erreurMoyenneFinale + ";" + totalTimeApprentissage + ";" + score + "\n");
+        writer.close();
     }
 }

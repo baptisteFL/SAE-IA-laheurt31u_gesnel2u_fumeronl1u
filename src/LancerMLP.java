@@ -73,7 +73,6 @@ public class LancerMLP {
             double err = 0;
             for (int j = 0; j < inputEntrainement.length; j++)
             {
-                double[] prediction = reseau.execute(inputEntrainement[j]);
                 err += reseau.backPropagate(inputEntrainement[j], outputEntrainement[j]);
             }
             errMoy[i%inputEntrainement.length] = err / inputEntrainement.length;
