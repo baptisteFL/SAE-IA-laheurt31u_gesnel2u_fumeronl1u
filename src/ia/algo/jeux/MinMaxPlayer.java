@@ -9,6 +9,8 @@ import java.util.List;
 
 public class MinMaxPlayer extends Player {
 
+    private static final int MAX_DEPTH = 5; // Profondeur maximale de recherche
+
     public MinMaxPlayer(Game game, boolean playerOne) {
         super(game, playerOne);
         this.name = "MinMax";
@@ -17,17 +19,17 @@ public class MinMaxPlayer extends Player {
     @Override
     public Action getMove(GameState state) {
         if (this.player == PLAYER1) {
-            return maxValue(state).getAction();
+            return maxValue(state, 0).getAction();
         } else {
-            return minValue(state).getAction();
+            return minValue(state, 0).getAction();
         }
     }
 
-    private ActionValuePair maxValue(GameState state) {
+    private ActionValuePair maxValue(GameState state, int depth) {
         this.incStateCounter();
 
-        // Si c'est un état terminal (victoire/défaite/nul)
-        if (state.isFinalState()) {
+        // Si l'état est final ou si la profondeur maximale est atteinte
+        if (state.isFinalState() || depth >= MAX_DEPTH) {
             return new ActionValuePair(null, state.getGameValue());
         }
 
@@ -38,7 +40,7 @@ public class MinMaxPlayer extends Player {
         // Pour chaque action possible, on explore les futurs états du jeu
         for (Action action : actions) {
             GameState nextState = (GameState) game.doAction(state, action); // Appliquer l'action
-            ActionValuePair result = minValue(nextState); // Appeler la méthode minValue pour le joueur adverse
+            ActionValuePair result = minValue(nextState, depth + 1); // Appeler minValue pour le joueur adverse
 
             if (result.getValue() > vMax) { // Maximiser la valeur pour MAX
                 vMax = result.getValue();
@@ -49,11 +51,11 @@ public class MinMaxPlayer extends Player {
         return new ActionValuePair(bestAction, vMax); // Retourner l'action avec la meilleure valeur
     }
 
-    private ActionValuePair minValue(GameState state) {
+    private ActionValuePair minValue(GameState state, int depth) {
         this.incStateCounter();
 
-        // Si c'est un état terminal (victoire/défaite/nul)
-        if (state.isFinalState()) {
+        // Si l'état est final ou si la profondeur maximale est atteinte
+        if (state.isFinalState() || depth >= MAX_DEPTH) {
             return new ActionValuePair(null, state.getGameValue());
         }
 
@@ -64,7 +66,7 @@ public class MinMaxPlayer extends Player {
         // Pour chaque action possible, on explore les futurs états du jeu
         for (Action action : actions) {
             GameState nextState = (GameState) game.doAction(state, action); // Appliquer l'action
-            ActionValuePair result = maxValue(nextState); // Appeler la méthode maxValue pour le joueur adverse
+            ActionValuePair result = maxValue(nextState, depth + 1); // Appeler maxValue pour le joueur adverse
 
             if (result.getValue() < vMin) { // Minimiser la valeur pour MIN
                 vMin = result.getValue();
