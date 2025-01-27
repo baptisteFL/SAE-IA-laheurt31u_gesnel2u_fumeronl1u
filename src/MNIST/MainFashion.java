@@ -25,7 +25,7 @@ public class MainFashion {
         Statistiques stats = new Statistiques(pp, imagettesTest);
         System.out.println("Taux d'erreur : " + stats.getTauxErreur());
 
-        kNN knn = new kNN(ImageEntrainement.getImagettes(), LabelEntrainement.getEtiquettes());
+        KNN knn = new KNN(ImageEntrainement.getImagettes(), LabelEntrainement.getEtiquettes(), 3);
         for(int i = 0; i < 50; i++) {
             int p = knn.predire(imagettesTest[i]);
             ImageTest.sauverImage(imagettesTest[i].getData(), "premiereImagetteTest.png");

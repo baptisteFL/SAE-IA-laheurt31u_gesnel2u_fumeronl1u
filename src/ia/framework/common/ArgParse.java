@@ -188,6 +188,12 @@ public class ArgParse {
         return new SigmoidFunction(); // valeur par défaut
     }
 
+    public static int getKFromCmd(String[] args)
+    {
+        handleFlags(args);
+        return getValueOfParam(args, "-k", 3);
+    }
+
     /**
      * Retourne la valeur d'un argument de la ligne de commande
      *
@@ -206,8 +212,7 @@ public class ArgParse {
                 usage();
                 System.exit(2);
             }
-        return def; // valeur par défaut 
-
+        return def; // valeur par défaut
     }
 
     /**
