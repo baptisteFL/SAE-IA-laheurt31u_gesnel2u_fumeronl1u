@@ -1,14 +1,15 @@
 package MNIST;
 
-public class kNN extends AlgoClassification {
+public class KNN extends AlgoClassification {
+    private int k;
 
-    public kNN(Imagette[] trainImages, int[] trainLabels) {
+    public KNN(Imagette[] trainImages, int[] trainLabels, int k) {
         super(trainImages, trainLabels);
+        this.k = k;
     }
 
     @Override
     public int predire(Imagette image) {
-        int k = 7;
         // faire une liste pour stocker les 10 plus proches voisins
         Imagette[] kPlusProches = new Imagette[k];
         // faire une liste pour stocker les distances des 10 plus proches voisins
