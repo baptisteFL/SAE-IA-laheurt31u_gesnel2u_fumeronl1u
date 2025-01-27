@@ -1,31 +1,36 @@
 package ia.algo.jeux;
 
 import ia.framework.common.Action;
-import ia.framework.jeux.Player;
 import ia.framework.common.ActionValuePair;
-import ia.framework.jeux.Game;
 import ia.framework.jeux.GameState;
+import ia.framework.jeux.Game;
+import ia.framework.jeux.Player;
+
 import java.util.List;
 
 public class AlphaBetaPlayer extends Player {
 
-    public AlphaBetaPlayer(Game game, boolean playerOne) {
+    private final int maxDepth;
+
+    public AlphaBetaPlayer(Game game, boolean playerOne, int maxDepth) {
         super(game, playerOne);
+        this.maxDepth = maxDepth;
         this.name = "AlphaBeta";
     }
 
     @Override
     public Action getMove(GameState state) {
         if (this.player == PLAYER1) {
-            return maxValue(state, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY).getAction();
+            return maxValue(state, 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY).getAction();
         } else {
-            return minValue(state, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY).getAction();
+            return minValue(state, 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY).getAction();
         }
     }
 
-    private ActionValuePair maxValue(GameState state, double alpha, double beta) {
+    private ActionValuePair maxValue(GameState state, int depth, double alpha, double beta) {
         this.incStateCounter();
-        if (game.endOfGame(state)) {
+
+        if (state.isFinalState() || depth == maxDepth) {
             return new ActionValuePair(null, state.getGameValue());
         }
 
@@ -34,29 +39,27 @@ public class AlphaBetaPlayer extends Player {
         List<Action> actions = game.getActions(state);
 
         for (Action action : actions) {
-            GameState nextState = (GameState) game.doAction(state, action);
-            ActionValuePair result = minValue(nextState, alpha, beta);
+            GameState nextState = (GameState) game.doAction(state, action); // Nous pouvons utiliser GameState directement
+            ActionValuePair result = minValue(nextState, depth + 1, alpha, beta);
 
             if (result.getValue() > vMax) {
                 vMax = result.getValue();
                 bestAction = action;
             }
 
-            if (vMax > alpha) {
-                alpha = vMax;
-            }
-
+            alpha = Math.max(alpha, vMax);
             if (vMax >= beta) {
-                return new ActionValuePair(bestAction, vMax);
+                break; // Coupure Alpha-Beta
             }
         }
 
         return new ActionValuePair(bestAction, vMax);
     }
 
-    private ActionValuePair minValue(GameState state, double alpha, double beta) {
+    private ActionValuePair minValue(GameState state, int depth, double alpha, double beta) {
         this.incStateCounter();
-        if (game.endOfGame(state)) {
+
+        if (state.isFinalState() || depth == maxDepth) {
             return new ActionValuePair(null, state.getGameValue());
         }
 
@@ -65,20 +68,17 @@ public class AlphaBetaPlayer extends Player {
         List<Action> actions = game.getActions(state);
 
         for (Action action : actions) {
-            GameState nextState = (GameState) game.doAction(state, action);
-            ActionValuePair result = maxValue(nextState, alpha, beta);
+            GameState nextState = (GameState) game.doAction(state, action); // Nous pouvons utiliser GameState directement
+            ActionValuePair result = maxValue(nextState, depth + 1, alpha, beta);
 
             if (result.getValue() < vMin) {
                 vMin = result.getValue();
                 bestAction = action;
             }
 
-            if (vMin < beta) {
-                beta = vMin;
-            }
-
+            beta = Math.min(beta, vMin);
             if (vMin <= alpha) {
-                return new ActionValuePair(bestAction, vMin);
+                break; // Coupure Alpha-Beta
             }
         }
 
