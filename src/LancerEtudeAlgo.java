@@ -12,7 +12,7 @@ public class LancerEtudeAlgo {
 
     public static void main(String[] args) throws IOException {
         // Paramètres de l'étude
-        int[] taillesGraphe = {10,100,1000, 2000,3000,4000,5000,6000,7000,8000,9000,10000}; // Très simple à très difficile
+        int[] taillesGraphe = {10,100,1000, 2000,3000,4000,5000,6000}; // Très simple à très difficile
         int[] facteursBranchement = {2,4,6,8}; // Facteurs de branchement
 
         // Fichier CSV pour enregistrer les résultats
@@ -38,8 +38,10 @@ public class LancerEtudeAlgo {
                     boolean solved = algo.solve();
                     long estimatedTime = System.currentTimeMillis() - startTime;
 
+                    double cost = solved ? algo.getEndNode().getCost() : -1;
+
                     // Enregistrer les résultats
-                    writer.write(algoName + ";" + taille + ";" + facteur + ";" + estimatedTime + ";" + solved + "\n");
+                    writer.write(algoName + ";" + taille + ";" + facteur + ";" + estimatedTime + ";" + solved + ";" + cost +"\n");
                 }
             }
         }
