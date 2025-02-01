@@ -338,7 +338,7 @@ public class ArgParse {
                 return new MinMaxPlayer(game, is_p1);
             //getValueOfParam(args, "-d", -1));
             case "alphabeta":
-            return new AlphaBetaPlayer(game, is_p1);
+            return new AlphaBetaPlayer(game, is_p1, 10000);
             //getValueOfParam(args, "-d", -1));
             default:
                 System.out.println("Joueur inconnu");

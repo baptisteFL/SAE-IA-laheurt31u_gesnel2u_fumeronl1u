@@ -3,13 +3,13 @@ package MNIST;
 public class MainFashion {
 
     public static void main(String[] args) {
-        Donnees ImageEntrainement = new Donnees("fashion/train-images-idx3-ubyte");
-        Etiquette LabelEntrainement = new Etiquette("fashion/train-labels-idx1-ubyte");
+        Donnees ImageEntrainement = new Donnees("fashion/train-images.idx3-ubyte");
+        Etiquette LabelEntrainement = new Etiquette("fashion/train-labels.idx1-ubyte");
         Imagette[] imagettes = ImageEntrainement.getImagettes();
         ImageEntrainement.chargerEtiquette(LabelEntrainement);
 
-        Donnees ImageTest = new Donnees("fashion/t10k-images-idx3-ubyte");
-        Etiquette LabelTest = new Etiquette("fashion/t10k-labels-idx1-ubyte");
+        Donnees ImageTest = new Donnees("fashion/t10k-images.idx3-ubyte");
+        Etiquette LabelTest = new Etiquette("fashion/t10k-labels.idx1-ubyte");
 
         Imagette[] imagettesTest = ImageTest.getImagettes();
         ImageTest.chargerEtiquette(LabelTest);

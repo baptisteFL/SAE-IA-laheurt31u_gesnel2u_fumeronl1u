@@ -27,11 +27,11 @@ public class LancerAnalyseImageKNN
         // Étape 1 : Configuration
         int k = ArgParse.getKFromCmd(args);
 
-        Donnees ImageEntrainement = new Donnees("MNIST/train-images.idx3-ubyte");
-        Etiquette LabelEntrainement = new Etiquette("MNIST/train-labels.idx1-ubyte");
+        Donnees ImageEntrainement = new Donnees("MNIST/fashion/train-images.idx3-ubyte");
+        Etiquette LabelEntrainement = new Etiquette("MNIST/fashion/train-labels.idx1-ubyte");
 
-        Donnees ImageTest = new Donnees("MNIST/t10k-images.idx3-ubyte");
-        Etiquette LabelTest = new Etiquette("MNIST/t10k-labels.idx1-ubyte");
+        Donnees ImageTest = new Donnees("MNIST/fashion/t10k-images.idx3-ubyte");
+        Etiquette LabelTest = new Etiquette("MNIST/fashion/t10k-labels.idx1-ubyte");
         ImageEntrainement.chargerEtiquette(LabelEntrainement);
         ImageTest.chargerEtiquette(LabelTest);
         Imagette[] imagettesTrain = ImageEntrainement.getImagettes();
@@ -57,7 +57,7 @@ public class LancerAnalyseImageKNN
         long total = System.currentTimeMillis() - start;
 
         // Étape 4 : Sauvegarde des résultats
-        FileWriter fw = new FileWriter("docs/resultImageTestKNN.csv", true);
+        FileWriter fw = new FileWriter("docs/resultImageFashionKNN.csv", true);
         fw.write(k+";"+score+";"+imagettesTest.length+";"+total+"\n");
         fw.close();
     }

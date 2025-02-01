@@ -1,4 +1,4 @@
-Algorithme;TailleGraphe;FacteurBranchement;TempsExecution;SolutionTrouvee
+Algorithme;TailleGraphe;FacteurBranchement;TempsExecution;SolutionTrouvee;CoutSolution
 astar;10;2;7;true;2554.414369706914
 bfs;10;2;2;true;2009.8633873948265
 dfs;10;2;1;true;2554.414369706914

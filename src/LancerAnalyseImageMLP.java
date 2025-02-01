@@ -43,8 +43,8 @@ public class LancerAnalyseImageMLP
         MLP reseau = new MLP(couches, pasApprentissage, fonction);
 
 
-        Donnees ImageEntrainement = new Donnees("MNIST/t10k-images.idx3-ubyte");
-        Etiquette LabelEntrainement = new Etiquette("MNIST/t10k-labels.idx1-ubyte");
+        Donnees ImageEntrainement = new Donnees("MNIST/fashion/t10k-images.idx3-ubyte");
+        Etiquette LabelEntrainement = new Etiquette("MNIST/fashion/t10k-labels.idx1-ubyte");
         ImageEntrainement.chargerEtiquette(LabelEntrainement);
         Imagette[] imagettes = ImageEntrainement.getImagettes();
         // Étape 2 : Préparer les données
@@ -122,7 +122,7 @@ public class LancerAnalyseImageMLP
         System.out.println("Score : " + score + "/" + inputTest.length);
 
         // Étape 5 : Sauvegarde
-        FileWriter writer = new FileWriter("docs/resultImageTestMLP.csv", true);
+        FileWriter writer = new FileWriter("docs/resultImageFashionMLP.csv", true);
         String fonctionString = fonction.getClass().toString().contains("Sigmoid") ? "sigmoid" : "tanh";
         writer.write(couches.length + ";" + Arrays.toString(couches) + ";" + pasApprentissage + ";" + fonctionString + ";" + erreurMoyenneFinale + ";" + totalTimeApprentissage + ";" + score + "\n");
         writer.close();
