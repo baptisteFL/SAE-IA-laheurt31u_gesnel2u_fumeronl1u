@@ -67,19 +67,72 @@ public class ConnectFourState extends AbstractMnkGameState {
     }
 
     /**
-     * {@inheritDoc} 
-     * Un fonction d'évaluation trop bête 
+     * Fonction d'évaluation pour Connect Four.
+     * Plus il y a de séquences potentielles gagnantes pour un joueur, plus la valeur est élevée.
+     * Le joueur X cherche à maximiser cette valeur, tandis que O cherche à la minimiser.
      *
-     * 
-     * @return la valeur du jeux pour le joueur courant 
-     **/
-    public double evaluationFunction(){
-        return Double.NaN;
+     * @return Score d'évaluation de l'état du jeu.
+     */
+    protected double evaluationFunction() {
+        int scoreX = evaluateForPlayer(X);
+        int scoreO = evaluateForPlayer(O);
+        return scoreX - scoreO; // Différence entre opportunités pour X et O
     }
-            
-    // l'API privée 
-        
-	/**
+
+    /**
+     * Évalue l'avantage d'un joueur en fonction des séquences ouvertes sur la grille.
+     */
+    private int evaluateForPlayer(int player) {
+        int score = 0;
+
+        // Vérifie les lignes, colonnes et diagonales
+        score += countPotentialLines(player, 1, 0);  // Lignes horizontales
+        score += countPotentialLines(player, 0, 1);  // Colonnes verticales
+        score += countPotentialLines(player, 1, 1);  // Diagonales montantes
+        score += countPotentialLines(player, 1, -1); // Diagonales descendantes
+
+        return score;
+    }
+
+    /**
+     * Compte les séquences ouvertes pour un joueur dans une direction donnée.
+     *
+     * @param player Joueur (X ou O)
+     * @param dRow Déplacement en ligne
+     * @param dCol Déplacement en colonne
+     * @return Score basé sur les lignes partiellement remplies
+     */
+    private int countPotentialLines(int player, int dRow, int dCol) {
+        int count = 0;
+
+        for (int row = 0; row < this.rows; row++) {
+            for (int col = 0; col < this.cols; col++) {
+                int consecutive = 0;
+                int empty = 0;
+
+                for (int i = 0; i < this.streak; i++) {
+                    int r = row + i * dRow;
+                    int c = col + i * dCol;
+
+                    if (r >= 0 && r < this.rows && c >= 0 && c < this.cols) {
+                        char cell = this.getValueAt(r, c);
+
+                        if (cell == player) consecutive++; // Pion du joueur
+                        else if (cell == EMPTY) empty++;  // Case vide
+                    }
+                }
+
+                // Seules les lignes ouvertes sont comptabilisées
+                if (consecutive > 0 && consecutive + empty == this.streak) {
+                    count += Math.pow(10, consecutive); // Priorité aux lignes plus longues
+                }
+            }
+        }
+
+        return count;
+    }
+
+    /**
 	 * Retourne la premier case vide de la colonne col 
      * -1 si c'est full
      */
