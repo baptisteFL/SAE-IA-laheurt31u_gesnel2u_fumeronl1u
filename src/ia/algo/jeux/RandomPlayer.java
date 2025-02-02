@@ -31,8 +31,17 @@ public class RandomPlayer extends Player {
     public Action getMove(GameState state) {
         this.incStateCounter();
         Action a = game.getRandomMove(state);
+
+        if (a == null) {
+            System.err.println("ERREUR: RandomPlayer n'a trouvé aucune action disponible !");
+            System.err.println("État du jeu: " + state);
+            System.err.println("Actions possibles: " + game.getActions(state));
+            return null;  // On peut aussi retourner une action par défaut si besoin
+        }
+
         return a;
     }
+
 
 
 }

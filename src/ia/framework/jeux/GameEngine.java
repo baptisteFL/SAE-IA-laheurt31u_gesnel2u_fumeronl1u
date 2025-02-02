@@ -90,7 +90,13 @@ public class GameEngine {
             System.out.println(new_state);
             if(ArgParse.DEBUG) 
                 System.out.println("\tValeur pour joueur 2 : "+new_state.getGameValue());
-                        
+
+            if (game.endOfGame(new_state)) {
+                System.out.println("🚨 Fin de partie détectée AVANT que RandomPlayer joue !");
+                break;
+            }
+
+
             // récupère le coup du joueur 2 et le jouer
             System.out.println("Au joueur 2 de jouer: ");
             Action p2_move = player2.getMove( new_state );

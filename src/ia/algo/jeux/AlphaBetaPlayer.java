@@ -25,6 +25,7 @@ public class AlphaBetaPlayer extends Player {
         } else {
             return minValue(state, 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY).getAction();
         }
+
     }
 
     private ActionValuePair maxValue(GameState state, int depth, double alpha, double beta) {

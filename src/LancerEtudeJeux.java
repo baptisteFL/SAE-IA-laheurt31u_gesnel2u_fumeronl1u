@@ -34,10 +34,8 @@ public class LancerEtudeJeux {
                 for (int streak : streaks) {
                     for (String p1_type : strategies) {
                         for (String p2_type : strategies) {
-                            if (jeu.equals("tictactoe") && taille != 3) continue; // Tic-Tac-Toe est toujours en 3x3
-                            if (jeu.equals("connect4") && (taille != 6 || streak != 4)) continue; // Connect4 est 6x7 avec 4 en ligne
-
                             // Créer le jeu
+                            System.out.println(p1_type +" vs "+p2_type);
                             Game game;
                             if (jeu.equals("tictactoe")) {
                                 game = new TicTacToe();

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class MinMaxPlayer extends Player {
 
-    private static final int MAX_DEPTH = 5; // Profondeur maximale de recherche
+    private static final int MAX_DEPTH = 7; // Profondeur maximale de recherche
 
     public MinMaxPlayer(Game game, boolean playerOne) {
         super(game, playerOne);
