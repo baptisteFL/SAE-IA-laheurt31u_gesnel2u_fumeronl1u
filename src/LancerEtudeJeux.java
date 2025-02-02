@@ -61,7 +61,7 @@ public class LancerEtudeJeux {
                             int totalMoves = gameEngine.getTotalMoves();
 
                             // Enregistrer dans le fichier
-                            writer.write(jeu + ";" + taille + ";" + streak + ";" + p1_type + ";" + p2_type + ";" +
+                            writer.write(jeu + ";" + taille + ";" + streak + ";" + p1_type.substring(0, 1).toUpperCase() + p1_type.substring(1) + ";" + p2_type.substring(0, 1).toUpperCase() + p2_type.substring(1) + ";" +
                                     winnerName + ";" + totalTime + ";" + totalMoves + "\n");
 
                             System.out.println("Jeu: " + jeu + ", Taille: " + taille + "x" + taille +
